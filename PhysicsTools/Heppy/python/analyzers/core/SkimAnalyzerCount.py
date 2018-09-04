@@ -1,4 +1,5 @@
 import itertools
+import numpy as np
 
 from PhysicsTools.Heppy.analyzers.core.Analyzer import Analyzer
 from PhysicsTools.Heppy.analyzers.core.AutoHandle import AutoHandle
@@ -29,6 +30,7 @@ class SkimAnalyzerCount( Analyzer ):
         self.count = self.counters.counter('SkimReport')
         self.count.register('All Events')
         if self.cfg_comp.isMC: 
+            self.count.register('Sum Norm Weights')
             self.count.register('Sum Weights')
 
         if not self.useLumiBlocks:
@@ -45,8 +47,7 @@ class SkimAnalyzerCount( Analyzer ):
             else:
                 self.useLumiBlocks = False
                 break
-            
-       
+                   
         if self.useLumiBlocks:
             self.count.inc('All Events',totalEvents)
             if self.cfg_comp.isMC: 
@@ -54,8 +55,6 @@ class SkimAnalyzerCount( Analyzer ):
             print 'Done -> proceeding with the analysis' 
         else:
             print 'Failed -> will have to actually count events (this can happen if the input dataset is not a CMG one)'
-
-
 
     def process(self, event):
         if self.verbose:
@@ -67,5 +66,9 @@ class SkimAnalyzerCount( Analyzer ):
             self.readCollections( event.input )
             self.count.inc('All Events')
             if self.cfg_comp.isMC: 
-                self.count.inc('Sum Weights', self.mchandles['GenInfo'].product().weight())
+                self.count.inc('Sum Norm Weights', np.sign(self.mchandles['GenInfo'].product().weight()))
+                self.count.inc('Sum Weights'     , self.mchandles['GenInfo'].product().weight())
+
+#                 print 'weight = ', self.mchandles['GenInfo'].product().weight()
+        
         return True
