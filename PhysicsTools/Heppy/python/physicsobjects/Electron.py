@@ -646,7 +646,6 @@ class Electron( Lepton ):
         '''returns the uncertainty on dxz (from gsf track)'''
         return self.gsfTrack().dzError()
 
-
     def lostInner(self) :
         if hasattr(self.gsfTrack(),"trackerExpectedHitsInner") :
 		return self.gsfTrack().trackerExpectedHitsInner().numberOfLostHits()
@@ -660,9 +659,9 @@ class Electron( Lepton ):
     def ptErr(self):
         return self.p4Error(self.candidateP4Kind())*self.pt()/self.p() if self.validCandidateP4Kind() else None
  
-###################################
-           ## HNL IDs ##
-###################################
+    ###################################
+               ## HNL IDs ##
+    ###################################
 
     def f_dEtaInSeed(self):           
         return abs(self.dEtaInSeed())
