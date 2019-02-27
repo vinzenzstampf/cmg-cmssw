@@ -77,8 +77,6 @@ class PileUpAnalyzer( Analyzer ):
                 except:
                     self.datahist = self.datafile.Get('pileup_total')
                     self.datahist.Scale( 1 / self.datahist.Integral() )
-                
-                
                 # import pdb; pdb.set_trace()
 
                 if not self.autoPU:
