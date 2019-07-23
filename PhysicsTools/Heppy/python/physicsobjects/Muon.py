@@ -165,3 +165,40 @@ class Muon( Lepton ):
     def ptErr(self):
         if "_ptErr" in self.__dict__: return self.__dict__['_ptErr']
         return self.bestTrack().ptError()
+
+    ###################################
+               ## HNL IDs ##
+    ###################################
+
+    def Medium(self):
+        isGoodGlobal = self.isGlobalMuon()                           and \
+                       self.combinedQuality().chi2LocalPosition < 12 and \
+                       self.combinedQuality().trkKink < 20
+        
+        isMedium = 0
+        if self.isLooseMuon() and self.segmentCompatibility() > (0.303 if isGoodGlobal else 0.451):
+            isMedium = 1
+        
+        return isMedium
+
+    ''' 
+    def MediumID(self):
+
+        Medium = 0
+        bool goodGlob = False
+        goodGlob = _lGlobalMuon[i] & _lCQChi2Position[i] < 12 & _lCQTrackKink[i] < 20;
+        Medium = _lPOGLoose[i] && _muonSegComp[i] > (goodGlob ? 0.303 : 0.451);
+
+
+        # time veto
+        _passTimingVeto[i] = true;
+        bool cmbok =( _lMuTimenDof[i] >7 );
+        bool rpcok =( _lMuRPCTimenDof[i] >1 & _lMuRPCTimeErr[i]==0 );
+            if (rpcok) {
+                if ( (fabs(_lMuRPCTime[i])>10) && !(cmbok && fabs(_lMuTime[i])<10) )
+                    _passTimingVeto[i]=false;
+          } else { if  (cmbok && ( _lMuTime[i]>20 || _lMuTime[i]<-45) ) 
+                    _passTimingVeto[i]=false; }
+        
+        return Medium
+    '''

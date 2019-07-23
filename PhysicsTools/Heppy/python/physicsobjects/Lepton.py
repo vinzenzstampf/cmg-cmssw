@@ -109,11 +109,24 @@ class Lepton( PhysicsObject):
         '''
         return self.absIso(0.4, 'EA', area_cone_size=area_cone_size)
     
-    def relIsoFromEA(self, area_cone_size='04'):
-        '''Calculate relative isolation using the effective area approach, 
-        for backward compatibility, should be removed. 
-        '''
-        return self.relIso(0.4, 'EA', area_cone_size=area_cone_size)
+    def absIsoFromEA(self, dRCone):
+        '''Calculate Isolation using the effective area approach.'''
+        return self.chargedHadronIso(dRCone) + max( 0., self.photonIso(dRCone) + self.neutralHadronIso(dRCone) - self.offsetEA(dRCone) )            
+
+    def offsetEA(self, dRCone): ####### for muons
+        area = 0.0
+        eta = self.eta()
+        if abs(eta) < 0.8000: area = 0.0566
+        if abs(eta) > 0.8000 and abs(eta) < 1.3000: area = 0.0562
+        if abs(eta) > 1.3000 and abs(eta) < 2.0000: area = 0.0363
+        if abs(eta) > 2.0000 and abs(eta) < 2.2000: area = 0.0119
+        if abs(eta) > 2.2000 and abs(eta) < 2.4000: area = 0.0064
+        if dRCone != 0.3: area *= ( (dRCone ** 2) / (0.3 **2) )
+        # print 'area = {a}, offset = {o}'.format(a = area, o = area * self.rho) 
+        return area * self.rho
+
+    def relIsoFromEA(self, dRCone):
+        return self.absIsoFromEA(dRCone)/self.pt() if self.pt()>0 else -999
     
     def lostInner(self):
         if hasattr(self.innerTrack(),"trackerExpectedHitsInner") :
