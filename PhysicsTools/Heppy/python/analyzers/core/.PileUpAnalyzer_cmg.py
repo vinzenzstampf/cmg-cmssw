@@ -71,23 +71,14 @@ class PileUpAnalyzer( Analyzer ):
             else:
                 assert( os.path.isfile(os.path.expandvars(self.cfg_comp.puFileData)) )
                 self.datafile = TFile( self.cfg_comp.puFileData )
-                try:
-                    self.datahist = self.datafile.Get('pileup')
-                    self.datahist.Scale( 1 / self.datahist.Integral() )
-                except:
-                    self.datahist = self.datafile.Get('pileup_total')
-                    self.datahist.Scale( 1 / self.datahist.Integral() )
+                self.datahist = self.datafile.Get('pileup')
+                self.datahist.Scale( 1 / self.datahist.Integral() )
 
                 if not self.autoPU:
                     assert( os.path.isfile(os.path.expandvars(self.cfg_comp.puFileMC)) )
 
-                    # self.mchist = self.mcfile.Get('pileup')
-                    try:
-                        self.mchist = self.mcfile.Get('pileup_total')
-                        self.mchist.Scale( 1 / self.mchist.Integral(0, self.mchist.GetNbinsX() + 1) )
-                    except:
-                        self.mchist = self.mcfile.Get('pileup')
-                        self.mchist.Scale( 1 / self.mchist.Integral(0, self.mchist.GetNbinsX() + 1) )
+                    self.mcfile = TFile( self.cfg_comp.puFileMC )
+                    self.mchist = self.mcfile.Get('pileup')
                     if self.mchist == None: # and not is None!!
                         # trying the file structure of Artur. 
                         # the distribution for each dataset is stored in the root file with a key like: 
