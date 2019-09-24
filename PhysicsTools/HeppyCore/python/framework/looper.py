@@ -13,6 +13,7 @@ import timeit
 import resource
 import json
 import six
+from pdb import set_trace
 
 class Setup(object):
     '''The Looper creates a Setup object to hold information relevant during 
@@ -78,6 +79,7 @@ class Looper(object):
                   set up a signal handler for SIGUSR2.
                   (if set to None, nothing of all this happens)
         """
+        print('nPrint:', nPrint) # debugging VS 30 Jul
 
         self.config = config
         self.name = self._prepareOutput(name)
@@ -175,6 +177,7 @@ class Looper(object):
         nEvents = self.nEvents
         firstEvent = self.firstEvent
         iEv = firstEvent
+        print('iEv:', iEv) # debugging VS 30 Jul
         self.logger.info('deciding on the number of events (can take a long time for a lot of input files...)')
         if nEvents is None or int(nEvents) > len(self.events) :
             nEvents = len(self.events)
@@ -209,7 +212,8 @@ class Looper(object):
                     self.logger.info('done first event')
                     at_firstEvent = False
                 if iEv<self.nPrint:
-                    print(self.event)
+                    print('iEv:', iEv, 'nPrint:', self.nPrint)
+                    #print(self.event) # debugging VS 30 Jul
                 if self.stopFlag and self.stopFlag.value:
                     print('stopping gracefully at event %d' % (iEv))
                     break
@@ -278,7 +282,11 @@ class Looper(object):
             if ret == False:
                 return (False, analyzer.name)
         if iEv<self.nPrint:
-            self.logger.info( self.event.__str__() )
+            print('iEv:', iEv, 'nPrint:', self.nPrint)
+            # self.logger.info( self.event.__str__() ) # VS debugging 30 Jul
+        # if os.environ['PRODUCTION'] == 'False':
+            # set_trace()
+            # self.logger.info( self.event.__str__() ) # VS debugging 30 Jul
         return (True, analyzer.name)
 
     def write(self):

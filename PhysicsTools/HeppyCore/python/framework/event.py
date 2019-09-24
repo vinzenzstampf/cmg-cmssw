@@ -2,6 +2,8 @@ import pprint
 import copy
 import collections
 import fnmatch
+from pdb import set_trace
+from os import environ
 
 from ROOT import TChain
 
@@ -63,9 +65,11 @@ class Event(object):
         
         #first of all check for matches with print patterns
         for name, value in selected_attrs.iteritems():
+            print('im in the for loop 1')  # debugging VS 30 Jul
             if any([fnmatch.fnmatch(name, pattern) for pattern in self.__class__.print_patterns]):
                 stripped_attrs[name] = value
         for name, value in stripped_attrs.iteritems():
+            print('im in the for loop 2')  # debugging VS 30 Jul
             if hasattr(value, '__len__') and \
                hasattr(value.__len__, '__call__') and \
                len(value)>self.__class__.print_nstrip+1:
@@ -76,7 +80,11 @@ class Event(object):
                     entries = entries[:self.__class__.print_nstrip]
                     entries
                     stripped_attrs[name] = dict(entries)
+                    print('im in the isinstance condition')  # debugging VS 30 Jul
                 else:
+                    print('im in the else condition')  # debugging VS 30 Jul
+                    print(name, value, collections.Mapping)
+                    if environ['PRODUCTION'] == 'False': set_trace()
                     stripped_attrs[name] = [ val for val in value[:self.__class__.print_nstrip] ]
                     stripped_attrs[name].append('...')
                     stripped_attrs[name].append(value[-1])
