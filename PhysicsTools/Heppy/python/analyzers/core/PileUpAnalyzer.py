@@ -81,6 +81,7 @@ class PileUpAnalyzer( Analyzer ):
                 if not self.autoPU:
                     assert( os.path.isfile(os.path.expandvars(self.cfg_comp.puFileMC)) )
 
+                    self.mcfile = TFile( self.cfg_comp.puFileMC )
                     # self.mchist = self.mcfile.Get('pileup')
                     try:
                         self.mchist = self.mcfile.Get('pileup_total')
