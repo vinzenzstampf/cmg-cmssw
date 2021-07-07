@@ -11,14 +11,25 @@ class Lepton( PhysicsObject):
         db, edb = self.dB(self.PV3D), self.edB(self.PV3D)
         return abs(db/edb) if edb > 0 else 999.
 
-    def absIsoFromEA(self, area='04'):
+    def absIsoFromEA(self, dRCone):
         '''Calculate Isolation using the effective area approach.'''
         photonIso = self.photonIso()
-        offset = self.rho*getattr(self,"EffectiveArea"+area)
-        return self.chargedHadronIso()+max(0.,photonIso+self.neutralHadronIso()-offset)            
+        return self.chargedHadronIso() + max( 0., photonIso+self.neutralHadronIso() - self.offsetEA(dRCone) )            
 
-    def relIsoFromEA(self, area='04'):
-        return self.absIsoFromEA(area)/self.pt() if self.pt()>0 else -999
+    def offsetEA(self, dRCone): ####### for muons
+        area = 0.0
+        eta = self.eta()
+        if abs(eta) < 0.8000: area = 0.0566
+        if abs(eta) > 0.8000 and abs(eta) < 1.3000: area = 0.0562
+        if abs(eta) > 1.3000 and abs(eta) < 2.0000: area = 0.0363
+        if abs(eta) > 2.0000 and abs(eta) < 2.2000: area = 0.0119
+        if abs(eta) > 2.2000 and abs(eta) < 2.4000: area = 0.0064
+        if dRCone != 0.3: area *= ( (dRCone ** 2) / (0.3 **2) )
+        # print 'area = {a}, offset = {o}'.format(a = area, o = area * self.rho) 
+        return area * self.rho
+
+    def relIsoFromEA(self, dRCone):
+        return self.absIsoFromEA(dRCone)/self.pt() if self.pt()>0 else -999
 
     def relIso(self, dBetaFactor=0, allCharged=0):
         '''Relative isolation with default cone size of 0.4.'''

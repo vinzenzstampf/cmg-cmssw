@@ -6,6 +6,7 @@ from FWCore.PythonUtilities.LumiList import LumiList
 from PhysicsTools.Heppy.utils.rltinfo import RLTInfo
 
 from DataFormats.FWLite import Lumis
+from pdb import set_trace
 
 class JSONAnalyzer( Analyzer ):
     '''Apply a json filter, and creates an RLTInfo TTree.
@@ -30,6 +31,7 @@ class JSONAnalyzer( Analyzer ):
 
     def __init__(self, cfg_ana, cfg_comp, looperName):
         super(JSONAnalyzer, self).__init__(cfg_ana, cfg_comp, looperName)
+        self.cfg_comp.json = '/work/dezhu/5_Miscellaneous/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt'
         if not cfg_comp.isMC:
             if self.cfg_comp.json is None:
                 raise ValueError('component {cname} is not MC, and contains no JSON file. Either remove the JSONAnalyzer for your path or set the "json" attribute of this component'.format(cname=cfg_comp.name))

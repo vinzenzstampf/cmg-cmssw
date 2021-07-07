@@ -71,15 +71,25 @@ class PileUpAnalyzer( Analyzer ):
             else:
                 assert( os.path.isfile(os.path.expandvars(self.cfg_comp.puFileData)) )
                 self.datafile = TFile( self.cfg_comp.puFileData )
-                self.datahist = self.datafile.Get('pileup')
-                self.datahist.Scale( 1 / self.datahist.Integral() )
+                try:
+                    self.datahist = self.datafile.Get('pileup')
+                    self.datahist.Scale( 1 / self.datahist.Integral() )
+                except:
+                    self.datahist = self.datafile.Get('pileup_total')
+                    self.datahist.Scale( 1 / self.datahist.Integral() )
+                # import pdb; pdb.set_trace()
 
                 if not self.autoPU:
                     assert( os.path.isfile(os.path.expandvars(self.cfg_comp.puFileMC)) )
 
                     self.mcfile = TFile( self.cfg_comp.puFileMC )
-                    self.mchist = self.mcfile.Get('pileup')
-                    self.mchist.Scale( 1 / self.mchist.Integral(0, self.mchist.GetNbinsX() + 1) )
+                    # self.mchist = self.mcfile.Get('pileup')
+                    try:
+                        self.mchist = self.mcfile.Get('pileup_total')
+                        self.mchist.Scale( 1 / self.mchist.Integral(0, self.mchist.GetNbinsX() + 1) )
+                    except:
+                        self.mchist = self.mcfile.Get('pileup')
+                        self.mchist.Scale( 1 / self.mchist.Integral(0, self.mchist.GetNbinsX() + 1) )
 
                     # import pdb; pdb.set_trace()
                     if self.mchist.GetNbinsX() != self.datahist.GetNbinsX():
